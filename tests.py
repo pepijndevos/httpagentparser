@@ -128,6 +128,15 @@ data = (
 ('Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)',
     ('Unknown OS', 'BaiduBot 2.0'),
     {'browser': {'name': 'BaiduBot', 'version': '2.0'}, 'kind': 'bot'}),
+('Mozilla/5.0 (compatible; MSIE 9.0; Windows Phone OS 7.5; Trident/5.0; IEMobile/9.0; HTC; Radar 4G)',
+    ('Windows Phone 7.5', 'Microsoft Internet Explorer 9.0'),
+    {'browser': {'name': 'Microsoft Internet Explorer', 'version': '9.0'}, 'kind': 'mobile', 'os': {'name': 'Windows Phone', 'version': '7.5'}}),
+('Mozilla/4.0 (compatible; MSIE 7.0; Windows Phone OS 7.0; Trident/3.1; IEMobile/7.0; SAMSUNG; GT-i8700)',
+    ('Windows Phone 7.0', 'Microsoft Internet Explorer 7.0'),
+    {'browser': {'name': 'Microsoft Internet Explorer', 'version': '7.0'}, 'kind': 'mobile', 'os': {'name': 'Windows Phone', 'version': '7.0'}}),
+('Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; HTC_HD2_T8585; Windows Phone 6.5)',
+    ('Windows Phone 6.5', 'Microsoft Internet Explorer 6.0'),
+    {'browser': {'name': 'Microsoft Internet Explorer', 'version': '6.0'}, 'kind': 'mobile', 'os': {'name': 'Windows Phone', 'version': '6.5'}}),
 )
 
 class TestHAP(unittest.TestCase):
