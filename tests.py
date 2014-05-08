@@ -132,7 +132,7 @@ data = (
 
 class TestHAP(unittest.TestCase):
     def setUp(self):
-        self.harass_repeat = 1#000
+        self.harass_repeat = 1000
         self.data = data
 
     def test_simple_detect(self):
