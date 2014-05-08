@@ -125,6 +125,9 @@ data = (
 ('Mozilla/5.0 (compatible; YandexBot/3.0)',
     ('Unknown OS', 'YandexBot 3.0'),
     {'browser': {'name': 'YandexBot', 'version': '3.0'}, 'kind': 'bot'}),
+('Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)',
+    ('Unknown OS', 'BaiduBot 2.0'),
+    {'browser': {'name': 'BaiduBot', 'version': '2.0'}, 'kind': 'bot'}),
 )
 
 class TestHAP(unittest.TestCase):

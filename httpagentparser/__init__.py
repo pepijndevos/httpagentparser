@@ -275,6 +275,13 @@ class BingBot(Browser, Bot):
     look_for = "bingbot"
     version_markers = ('/', ';')
 
+class BaiduBot(Browser, Bot):
+    # http://help.baidu.com/question?prod_en=master&class=1&id=1000973
+    look_for = ["Baiduspider", "Baiduspider-image", "Baiduspider-video", 
+                "Baiduspider-news", "Baiduspider-favo", "Baiduspider-cpro",
+                "Baiduspider-ads"]
+    version_markers = ('/', ';')
+
 class LinkedInBot(Browser, Bot):
     look_for = "LinkedInBot"
 
