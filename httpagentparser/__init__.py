@@ -273,6 +273,7 @@ class YandexBot(Browser, Bot):
 
 class BingBot(Browser, Bot):
     look_for = "bingbot"
+    version_markers = ('/', ';')
 
 class LinkedInBot(Browser, Bot):
     look_for = "LinkedInBot"

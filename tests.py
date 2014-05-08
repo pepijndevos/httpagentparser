@@ -119,12 +119,17 @@ data = (
 ('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
     ('Unknown OS', 'GoogleBot 2.1'),
     {'browser': {'name': 'GoogleBot', 'version': '2.1'}, 'kind': 'bot'}),
-
+('"Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)"',
+    ('Unknown OS', 'BingBot 2.0'),
+    {'browser': {'name': 'BingBot', 'version': '2.0'}, 'kind': 'bot'}),
+('Mozilla/5.0 (compatible; YandexBot/3.0)',
+    ('Unknown OS', 'YandexBot 3.0'),
+    {'browser': {'name': 'YandexBot', 'version': '3.0'}, 'kind': 'bot'}),
 )
 
 class TestHAP(unittest.TestCase):
     def setUp(self):
-        self.harass_repeat = 1000
+        self.harass_repeat = 1#000
         self.data = data
 
     def test_simple_detect(self):
