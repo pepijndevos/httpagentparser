@@ -55,9 +55,10 @@ class DetectorBase(object):
 
     def detect(self, agent, result):
         # -> True/None
-        if self.checkWords(agent):
+        word = self.checkWords(agent)
+        if word:
             result[self.info_type] = dict(name=self.name)
-            version = self.getVersion(agent)
+            version = self.getVersion(agent, word)
             if version:
                 result[self.info_type]['version'] = version
             if self.platform:
@@ -73,17 +74,17 @@ class DetectorBase(object):
         if isinstance(self.look_for, (tuple, list)):
             for word in self.look_for:
                 if word in agent:
-                    return True
+                    return word
         elif self.look_for in agent:
-            return True
+            return self.look_for
 
-    def getVersion(self, agent):
+    def getVersion(self, agent, word):
         """
         => version string /None
         """
         version_markers = self.version_markers if \
             isinstance(self.version_markers[0], (list, tuple)) else [self.version_markers]
-        version_part = agent.split(self.look_for, 1)[-1]
+        version_part = agent.split(word, 1)[-1]
         for start, end in version_markers:
             if version_part.startswith(start) and end in version_part:
                 version = version_part[1:]
@@ -145,7 +146,7 @@ class OperaMobile(Browser, Mobile):
     look_for = "Opera Mobi"
     name = "Opera Mobile"
 
-    def getVersion(self, agent):
+    def getVersion(self, agent, word):
         try:
             look_for = "Version"
             return agent.split(look_for)[1][1:].split(' ')[0]
@@ -157,7 +158,7 @@ class OperaMobile(Browser, Mobile):
 class Opera(Browser):
     look_for = "Opera"
 
-    def getVersion(self, agent):
+    def getVersion(self, agent, word):
         try:
             look_for = "Version"
             return agent.split(look_for)[1][1:].split(' ')[0]
@@ -192,8 +193,8 @@ class Trident(Browser):
         '7.0': '11.0',
     }
 
-    def getVersion(self, agent):
-        return self.trident_to_ie_versions.get(super(Trident, self).getVersion(agent))
+    def getVersion(self, agent, word):
+        return self.trident_to_ie_versions.get(super(Trident, self).getVersion(agent, word))
 
 
 class MSIE(Browser):
@@ -210,7 +211,7 @@ class Galeon(Browser):
 class WOSBrowser(Browser, Mobile):
     look_for = "wOSBrowser"
 
-    def getVersion(self, agent):
+    def getVersion(self, agent, word):
         pass
 
 
@@ -223,9 +224,9 @@ class Safari(Browser):
             for word in unless_list:
                 if word in agent:
                     return False
-            return True
+            return self.look_for
 
-    def getVersion(self, agent):
+    def getVersion(self, agent, word):
         if "Version/" in agent:
             return agent.split('Version/')[-1].split(' ')[0].strip()
         if "Safari/" in agent:
@@ -238,6 +239,7 @@ class GoogleBot(Browser, Bot):
     look_for = ["Googlebot", "Googlebot-News", "Googlebot-Image",
                 "Googlebot-Video", "Googlebot-Mobile", "Mediapartners-Google",
                 "Mediapartners", "AdsBot-Google"]
+    version_markers = [('/', ';'), ('/', ' ')]
 
 class GoogleFeedFetcher(Browser, Bot):
     look_for = "Feedfetcher-Google"
@@ -266,7 +268,7 @@ class MJ12Bot(Browser, Bot):
 class YandexBot(Browser, Bot):
     # http://help.yandex.com/search/robots/agent.xml
     look_for = "Yandex"
-    def getVersion(self, agent):
+    def getVersion(self, agent, word):
         return agent[agent.index('Yandex'):].split('/')[-1].split(')')[0].strip()
 
 class BingBot(Browser, Bot):
@@ -342,7 +344,7 @@ class TelecaBrowser(Browser, Mobile):
 class MAUI(Browser, Mobile):
     look_for = 'Browser/MAUI'
 
-    def getVersion(self, agent):
+    def getVersion(self, agent, word):
         version = agent.split("Release/")[-1][:10]
         return version
 
@@ -356,14 +358,14 @@ class AndroidBrowser(Browser, Mobile):
     skip_if_found = ["Chrome"]
 
     # http://decadecity.net/blog/2013/11/21/android-browser-versions
-    def getVersion(self, agent):
+    def getVersion(self, agent, word):
         pass
 
 class Linux(OS):
     look_for = 'Linux'
     platform = 'Linux'
 
-    def getVersion(self, agent):
+    def getVersion(self, agent, word):
         pass
 
 
@@ -371,7 +373,7 @@ class Blackberry(OS, Mobile):
     look_for = 'BlackBerry'
     platform = 'BlackBerry'
 
-    def getVersion(self, agent):
+    def getVersion(self, agent, word):
         pass
 
 
@@ -379,7 +381,7 @@ class BlackberryPlaybook(Dist):
     look_for = 'PlayBook'
     platform = 'BlackBerry'
 
-    def getVersion(self, agent):
+    def getVersion(self, agent, word):
         pass
 
 
@@ -390,7 +392,7 @@ class iPhone(Dist, Mobile):
     look_for = 'iPhone'
     platform = 'iOS'
 
-    def getVersion(self, agent):
+    def getVersion(self, agent, word):
         version_end_chars = [' ']
         if not "iPhone OS" in agent:
             return None
@@ -405,7 +407,7 @@ class IPad(Dist):
     look_for = 'iPad; CPU OS'
     platform = 'iOS'
 
-    def getVersion(self, agent):
+    def getVersion(self, agent, word):
         version_end_chars = [' ']
         if not "CPU OS " in agent:
             return None
@@ -420,7 +422,7 @@ class IPad(Dist):
 class Macintosh(OS):
     look_for = 'Macintosh'
 
-    def getVersion(self, agent):
+    def getVersion(self, agent, word):
         pass
 
 
@@ -429,7 +431,7 @@ class MacOS(Flavor):
     platform = 'Mac OS'
     skip_if_found = ['iPhone', 'iPad']
 
-    def getVersion(self, agent):
+    def getVersion(self, agent, word):
         version_end_chars = [';', ')']
         part = agent.split('Mac OS')[-1].strip()
         for c in version_end_chars:
@@ -454,7 +456,7 @@ class Windows(OS):
                     "98; Win 9x 4.90": "Me"
     }
 
-    def getVersion(self, agent):
+    def getVersion(self, agent, word):
         v = agent.split('Windows')[-1].split(';')[0].strip()
         if ')' in v:
             v = v.split(')')[0]
@@ -477,8 +479,8 @@ class Chrome(Browser):
     version_markers = ["/", " "]
     skip_if_found = ["OPR"]
 
-    def getVersion(self, agent):
-        part = agent.split(self.look_for + self.version_markers[0])[-1]
+    def getVersion(self, agent, word):
+        part = agent.split(word + self.version_markers[0])[-1]
         version = part.split(self.version_markers[1])[0]
         if '+' in version:
             version = part.split('+')[0]
@@ -495,25 +497,25 @@ class ChromeOS(OS):
     platform = ' ChromeOS'
     version_markers = [" ", " "]
 
-    def getVersion(self, agent):
+    def getVersion(self, agent, word):
         version_markers = self.version_markers
-        if self.look_for + '+' in agent:
+        if word + '+' in agent:
             version_markers = ['+', '+']
-        return agent.split(self.look_for + version_markers[0])[-1].split(version_markers[1])[1].strip()[:-1]
+        return agent.split(word + version_markers[0])[-1].split(version_markers[1])[1].strip()[:-1]
 
 
 class Android(Dist, Mobile):
     look_for = 'Android'
     platform = 'Android'
 
-    def getVersion(self, agent):
-        return agent.split(self.look_for)[-1].split(';')[0].strip()
+    def getVersion(self, agent, word):
+        return agent.split(word)[-1].split(';')[0].strip()
 
 
 class WebOS(Dist, Mobile):
     look_for = 'hpwOS'
 
-    def getVersion(self, agent):
+    def getVersion(self, agent, word):
         return agent.split('hpwOS/')[-1].split(';')[0].strip()
 
 
@@ -521,7 +523,7 @@ class NokiaS40(OS, Mobile):
     look_for = 'Series40'
     platform = 'Nokia S40'
 
-    def getVersion(self, agent):
+    def getVersion(self, agent, word):
         pass
 
 
