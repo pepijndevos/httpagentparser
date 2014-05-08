@@ -116,11 +116,15 @@ data = (
 ('Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko',
     ('Windows 8.1', 'Microsoft Internet Explorer 11.0'),
     {'kind': 'desktop', 'os': {'name': 'Windows', 'version': '8.1'}, 'browser': {'version': '11.0', 'name': 'Microsoft Internet Explorer'}},),
+('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+    ('Unknown OS', 'GoogleBot 2.1'),
+    {'browser': {'name': 'GoogleBot', 'version': '2.1'}, 'kind': 'bot'}),
+
 )
 
 class TestHAP(unittest.TestCase):
     def setUp(self):
-        self.harass_repeat = 1#000
+        self.harass_repeat = 1000
         self.data = data
 
     def test_simple_detect(self):
